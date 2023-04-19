@@ -1,0 +1,11 @@
+# database setting
+DB_BRAND=mariadb
+DB_HOST=localhost
+DB_NAME=was
+DB_USER=was
+DB_PASSWORD=New1234!@
+
+# server setting
+SERVICE_PORT=19000
+BASE_URL=/was/v1
+CLUSTER_COUNT=0

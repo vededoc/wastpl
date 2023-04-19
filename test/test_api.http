@@ -1,0 +1,7 @@
+### Send POST request with json body
+POST http://localhost:19000/was/v1/getUser
+Content-Type: application/json
+
+{
+  "userId": "user1@test.com"
+}
