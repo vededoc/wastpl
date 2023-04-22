@@ -1,6 +1,6 @@
 import {DBBase} from "./db/DBBase";
 import {MariaDBClient} from "./db/MariaDBClient";
-import {PgClient} from "./db/PgClient";
+// import {PgClient} from "./db/PgClient";
 import * as express from 'express'
 import {program} from "commander";
 import * as fs from "fs";
@@ -26,7 +26,7 @@ export function GetDb() {
        if(gAppCfg.dbBrand == 'mariadb') {
            Db = new MariaDBClient()
        } else if(gAppCfg.dbBrand == 'pg') {
-           Db = new PgClient()
+           // Db = new PgClient()
        }
        Db.init(gAppCfg.dbUser, gAppCfg.dbPassword, gAppCfg.dbName, gAppCfg.dbHost, gAppCfg.dbPort)
    }

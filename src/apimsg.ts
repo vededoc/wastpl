@@ -1,3 +1,7 @@
+export const CAPI_PATH = '/capi'
+export const ADMIN_PATH = '/admin'
+export const OAPI_PATH = '/oapi'
+
 export interface BaseResp {
     code: string
     msg?: string

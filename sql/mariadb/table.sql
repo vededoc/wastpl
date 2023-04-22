@@ -11,3 +11,14 @@ create table user_profile (
     signupDate datetime,
     constraint user_profile_pk primary key (rid, userId)
 );
+
+drop table if exists api_log;
+create table api_log (
+  rid bigint auto_increment,
+  ctime datetime,
+  serviceId varchar(10),
+  urlPath varchar(256),
+  data varchar(1024),
+  constraint api_log_pk primary key (rid)
+);
+create index api_log_idx ON api_log(ctime, serviceId);

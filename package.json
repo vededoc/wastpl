@@ -19,7 +19,8 @@
     "ioredis": "^5.3.2",
     "mariadb": "^3.1.1",
     "pg": "^8.10.0",
-    "tracer": "^1.1.6"
+    "tracer": "^1.1.6",
+    "yaml": "^2.2.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",

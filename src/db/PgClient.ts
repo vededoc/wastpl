@@ -1,3 +1,4 @@
+/*
 import {DBBase} from "./DBBase";
 import {UserProfileRec} from "./dbrecord";
 import {Pool} from 'pg'
@@ -15,4 +16,4 @@ export class PgClient extends DBBase {
         return res.rows[0];
     }
 
-}
+}*/

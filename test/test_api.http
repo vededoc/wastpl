@@ -1,5 +1,5 @@
 ### Send POST request with json body
-POST http://localhost:19000/was/v1/getUser
+POST http://localhost:19000/was/v1/capi/getUser
 Content-Type: application/json
 
 {
