@@ -1,18 +1,19 @@
 require('dotenv').config()
 
+import {gAppCfg, InitApp} from "./app";
 import * as os from "os";
 const cluster = require('node:cluster')
 
 import gMainProc from "./MainProc";
 import logger from "./logger";
 
-process.title = 'wastpl'
-const {CLUSTER_COUNT} = process.env
-const clusterCnt = CLUSTER_COUNT != undefined ? Number.parseInt(CLUSTER_COUNT) : os.cpus().length
+InitApp()
 
-if(clusterCnt >0 && cluster.isPrimary) {
+process.title = 'wastpl'
+
+if(gAppCfg.clusterCount >0 && cluster.isPrimary) {
     logger.info('main start')
-    for(let i=0;i<clusterCnt;i++) {
+    for(let i=0;i<gAppCfg.clusterCount;i++) {
         cluster.fork()
     }
 } else {

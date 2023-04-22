@@ -1,6 +1,7 @@
 import * as express from 'express'
 import * as http from "http";
 import {CApiRouter} from "./CApiRouter";
+import {gAppCfg} from "./app";
 const cors = require('cors')
 
 class MainProc {
@@ -10,14 +11,9 @@ class MainProc {
         app.use(express.json())
         app.use(cors())
 
-        const basePath = process.env.BASE_PATH ?? '/was/v1'
-        new CApiRouter(app, basePath)
-
-
-        const port_s = process.env.SERVICE_PORT ?? '80'
-        const port = Number.parseInt(port_s)
+        new CApiRouter(app, gAppCfg.basePath)
         const server = http.createServer(app)
-        server.listen(port, '0.0.0.0')
+        server.listen(gAppCfg.servicePort, '0.0.0.0')
     }
 }
 
