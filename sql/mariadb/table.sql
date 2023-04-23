@@ -22,3 +22,16 @@ create table api_log (
   constraint api_log_pk primary key (rid)
 );
 create index api_log_idx ON api_log(ctime, serviceId);
+
+drop table if exists service_profile;
+create table service_profile (
+    serviceId varchar(10),
+    apiKey varchar(40),
+    status int,
+    registeredDate datetime,
+    updateDate datetime,
+    polices json,
+    description varchar(128),
+    constraint service_profile_pk primary key (serviceId)
+);
+create index service_profile_idx on service_profile(apiKey);

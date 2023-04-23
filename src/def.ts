@@ -8,3 +8,7 @@ export const ErrCode = {
     error: 'ERROR',
 }
 
+export interface ServicePolicy {
+    maxBitrate: number
+    codec: 'h264' | 'av1' |'VP8'
+}

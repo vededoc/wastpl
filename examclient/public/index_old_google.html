@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google OAuth Login Example</title>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="647588110158-ug20mj9l2vduft645orlk4vi5k2eqh3m.apps.googleusercontent.com">
+</head>
+<body>
+<h1>Google OAuth Login Example</h1>
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
+<script>
+    function onSignIn(googleUser) {
+        // 유저 프로필 정보 가져오기
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId());
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail());
+
+        // ID 토큰 가져오기
+        var id_token = googleUser.getAuthResponse().id_token;
+        console.log('ID Token: ' + id_token);
+    }
+</script>
+<a href="#" onclick="signOut();">로그아웃</a>
+<script>
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+            console.log('User signed out.');
+        });
+    }
+</script>
+</body>
+</html>

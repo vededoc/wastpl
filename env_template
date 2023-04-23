@@ -3,7 +3,7 @@ DB_BRAND=mariadb
 DB_HOST=localhost
 DB_NAME=was
 DB_USER=was
-DB_PASSWORD=New1234!@
+DB_PASSWORD=
 
 # server setting
 SERVICE_PORT=19000

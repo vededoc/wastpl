@@ -1,0 +1,28 @@
+### Send POST request with json body
+POST http://localhost:19000/was/v1/capi/getUser
+Content-Type: application/json
+
+{
+  "userId": "user1@test.com"
+}
+
+### Send POST request with json body
+POST http://localhost:19000/was/v1/sapi/newService
+Content-Type: application/json
+
+{
+  "serviceId": "svc1",
+  "description": "any service"
+}
+
+### singup
+POST http://localhost:19000/was/v1/capi/signUp
+Content-Type: application/json
+
+{
+  "serviceId": "svc1",
+  "userId": "user1@kt.com",
+  "email": "user1@kt.com",
+  "userName": "user1",
+  "authType": "google"
+}

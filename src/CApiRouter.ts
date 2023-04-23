@@ -1,7 +1,7 @@
 import {Express} from "express";
 import * as express from 'express'
 import {ApiResp, GetDb} from "./app";
-import {GetUserReq, SignInReq} from "./apimsg";
+import {GetUserReq, SignInReq, SignUpReq} from "./apimsg";
 import {ErrCode} from "./def";
 import {waitSec} from "@vededoc/sjsutils";
 import logger from "./logger";
@@ -22,6 +22,11 @@ export class CApiRouter {
             next()
         })
 
+        router.post('/signUp', async (req, resp) => {
+            const rqm = req.body as SignUpReq
+
+            ApiResp(resp, ErrCode.ok)
+        })
         router.post('/signIn', async (req, resp) =>{
             const rqm = req.body as SignInReq
             try {

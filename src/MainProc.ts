@@ -3,29 +3,58 @@ import * as http from "http";
 import {CApiRouter} from "./CApiRouter";
 import {gAppCfg, GetDb} from "./app";
 import logger from "./logger";
-import {CAPI_PATH} from "./apimsg";
+import {CAPI_PATH, SAPI_PATH} from "./apimsg";
+import {SApiRouter} from "./SApiRouter";
+import wasRedis from "./WasRedis";
+import {DBBase} from "./db/DBBase";
+import {ServiceProfileRec} from "./db/dbrecord";
+import gServices from "./Services";
+import * as sqlstring from 'sqlstring'
 const cors = require('cors')
 
 class MainProc {
+    private db: DBBase
+    private services: Map<string, ServiceProfileRec>
     init() {
         logger.info('worker init')
+        wasRedis.init();
+        gServices.init();
+        const db = GetDb()
+        this.db = db
+
+
         const app = express()
         app.disable('x-powered-by')
         app.use(express.json())
         app.use(cors())
-        const db = GetDb()
+
         app.use(gAppCfg.basePath, (req: express.Request, resp, next) => {
-            db.apiLog(req.path, req.body).catch(err => {
-                console.error(err)
-            })
+            if(gAppCfg.apiLog) {
+                db.apiLog(req.path, req.body).catch(err => {
+                    console.error(err)
+                })
+            }
             next()
         })
 
         new CApiRouter(app, gAppCfg.basePath + CAPI_PATH)
-
+        new SApiRouter(app, gAppCfg.basePath + SAPI_PATH)
 
         const server = http.createServer(app)
         server.listen(gAppCfg.servicePort, '0.0.0.0')
+    }
+
+    async loadServices() {
+        try {
+            const res = await this.db.retrieveServices()
+            const svcs = new Map()
+            for(let r of res) {
+                svcs.set(r.serviceId, r)
+            }
+            this.services = svcs
+        } catch (err) {
+            console.trace(err)
+        }
     }
 }
 

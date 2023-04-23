@@ -17,6 +17,17 @@ export interface AppCfg {
     servicePort: number
     clusterCount: number
     basePath: string
+    apiLog: boolean
+
+    scheduler: boolean
+    dataDurations: number
+
+    // redis
+    redisHost: string
+    redisPort?: number
+    redisDb?: number
+    redisUser?: string
+    redisPassword?: string
 }
 
 export const gAppCfg = {} as AppCfg
@@ -69,10 +80,27 @@ export function InitApp() {
     }
     gAppCfg.servicePort = Number.parseInt( process.env.servicePort ?? '19000')
     gAppCfg.basePath = process.env.basePath ?? '/was/v1'
+    gAppCfg.apiLog = (process.env.apiLog ?? '0') == '1' ? true:false
+
+    // redis
+    const {redisHost, redisPort, redisUser, redisPassword, redisDb} = process.env
+    gAppCfg.redisHost = redisHost
+    if(redisPort != undefined) {
+        gAppCfg.redisPort = Number.parseInt(redisPort)
+    }
+    gAppCfg.redisUser = redisUser
+    gAppCfg.redisPassword = redisPassword
+    if(redisDb != undefined) {
+        gAppCfg.redisDb = Number.parseInt(redisDb)
+    }
+
 
     program
-        .option('-w, --wor-dir <working-dir>', 'working directory')
+        .option('-w, --work-dir <working-dir>', 'working directory')
+        .option('--scheduler', 'run as worker for scheduling')
         .version(pkgJson.version)
     program.parse()
 
+    const opts = program.opts()
+    gAppCfg.scheduler = opts.scheduler ?? false;
 }
