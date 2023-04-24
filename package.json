@@ -2,6 +2,7 @@
   "name": "wastpl",
   "version": "0.0.1.aplha.0",
   "main": "dist/main.js",
+  "bin": "wasbin",
   "repository": "git@github.com:vededoc/wastpl.git",
   "license": "MIT",
   "scripts": {

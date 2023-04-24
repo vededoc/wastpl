@@ -1,6 +1,6 @@
 require('dotenv').config({path: '../../.env'})
 
-import {gAppCfg, GetDb, InitApp} from "../app";
+import {gAppCfg, GetDb, InitApp} from "../src/app";
 import * as YAML from 'yaml'
 
 (async ()=>{

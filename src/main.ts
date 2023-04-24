@@ -4,7 +4,6 @@ const cluster = require('node:cluster')
 
 import * as YAML from 'yaml'
 import {gAppCfg, InitApp} from "./app";
-import * as os from "os";
 
 import gMainProc from "./MainProc";
 import logger from "./logger";
@@ -13,7 +12,7 @@ import gScheduler from "./Scheduler";
 InitApp()
 
 if(!gAppCfg.scheduler) {
-    process.title = 'wastpl'
+    process.title = gAppCfg.pkgName
 
     if (gAppCfg.clusterCount > 0 && cluster.isPrimary) {
         logger.info('main start')
@@ -36,7 +35,7 @@ if(!gAppCfg.scheduler) {
     }
 
 } else {
-    process.title = 'was-scheduler'
+    process.title = `${gAppCfg.pkgName}_sched`
     logger.info('run as scheduler')
 
     gScheduler.init();

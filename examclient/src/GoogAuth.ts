@@ -35,12 +35,15 @@ class GoogleAuth {
 
         return JSON.parse(jsonPayload);
     };
-    prompt() {
+
+    renderButton() {
         google.accounts.id.renderButton(
             document.getElementById("eid_login_sec"),
-            { theme: "outline", size: "large" }  // customization attributes
+            {theme: "outline", size: "large"}  // customization attributes
         );
-        // google.accounts.id.prompt()
+    }
+    prompt() {
+        google.accounts.id.prompt()
     }
 }
 

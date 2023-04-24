@@ -6,8 +6,10 @@ import {program} from "commander";
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
+import logger from "./logger";
 
 export interface AppCfg {
+    pkgName: string
     dbBrand: string
     dbName: string
     dbHost: string
@@ -60,16 +62,18 @@ export function fileExists(file: string): boolean {
 }
 
 export function InitApp() {
+    logger.info('init app...')
     const rootPath = require('app-root-path')
     const pkgfile = path.resolve(rootPath.path, 'package.json')
     const pkgJson = require(pkgfile)
 
-    gAppCfg.dbBrand = process.env.dbBrand
-    gAppCfg.dbUser = process.env.dbUser
-    gAppCfg.dbPassword = process.env.dbPassword
-    gAppCfg.dbHost = process.env.dbHost
+    gAppCfg.pkgName = pkgJson.name
+    gAppCfg.dbBrand = process.env.dbBrand ?? 'mariadb'
+    gAppCfg.dbUser = process.env.dbUser ?? 'wastpl'
+    gAppCfg.dbPassword = process.env.dbPassword ?? 'wastpl'
+    gAppCfg.dbHost = process.env.dbHost ?? 'localhost'
     gAppCfg.dbPort = process.env.dbPort != undefined ? Number.parseInt(process.env.dbPort) : undefined
-    gAppCfg.dbName = process.env.dbName
+    gAppCfg.dbName = process.env.dbName ?? 'wastpl'
     if(process.env.servicePort != undefined) {
         gAppCfg.servicePort = Number.parseInt(process.env.servicePort)
     }
@@ -84,7 +88,7 @@ export function InitApp() {
 
     // redis
     const {redisHost, redisPort, redisUser, redisPassword, redisDb} = process.env
-    gAppCfg.redisHost = redisHost
+    gAppCfg.redisHost = redisHost ?? 'localhost'
     if(redisPort != undefined) {
         gAppCfg.redisPort = Number.parseInt(redisPort)
     }
