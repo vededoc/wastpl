@@ -13,7 +13,9 @@ function handleCredentialResponse(token: any) {
 }
 
 window.onload = function () {
-    gGooleAuth.init('647588110158-ug20mj9l2vduft645orlk4vi5k2eqh3m.apps.googleusercontent.com')
+    console.info('google client id:', process.env.GOOGLE_CLIENT_ID)
+    // gGooleAuth.init('647588110158-ug20mj9l2vduft645orlk4vi5k2eqh3m.apps.googleusercontent.com')
+    gGooleAuth.init(process.env.GOOGLE_CLIENT_ID)
     {
         const btn = document.querySelector('#eid_google_login') as HTMLButtonElement
         btn.onclick = evt => {
