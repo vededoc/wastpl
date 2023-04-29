@@ -13,4 +13,8 @@ export function SetLogLevel(level) {
     require('tracer').setLevel(level)
 }
 
+export function GetLogLevel() {
+    return require('tracer').getLevel()
+}
+
 export default logger;

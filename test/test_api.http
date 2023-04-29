@@ -26,3 +26,14 @@ Content-Type: application/json
   "userName": "user1",
   "authType": "google"
 }
+
+### get log level
+GET http://localhost:19000/was/v1/mgmt/logLevel
+
+### set log level
+POST http://localhost:19000/was/v1/mgmt/logLevel
+Content-Type: application/json
+
+{
+  "level": "debug"
+}

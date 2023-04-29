@@ -1,6 +1,6 @@
 export const CAPI_PATH = '/capi'
 export const SAPI_PATH = '/sapi'
-export const ADMIN_PATH = '/admin'
+export const MGMT_PATH = '/mgmt'
 export const OAPI_PATH = '/oapi'
 
 export interface BaseResp {

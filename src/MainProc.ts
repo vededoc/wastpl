@@ -1,15 +1,17 @@
 import * as express from 'express'
 import * as http from "http";
 import {CApiRouter} from "./CApiRouter";
-import {gAppCfg, GetDb} from "./app";
+import {ApiResp, gAppCfg, GetDb} from "./app";
 import logger from "./logger";
-import {CAPI_PATH, SAPI_PATH} from "./apimsg";
+import {CAPI_PATH, MGMT_PATH, SAPI_PATH} from "./apimsg";
 import {SApiRouter} from "./SApiRouter";
 import wasRedis from "./WasRedis";
 import {DBBase} from "./db/DBBase";
 import {ServiceProfileRec} from "./db/dbrecord";
 import gServices from "./Services";
 import * as sqlstring from 'sqlstring'
+import {MgmtRouter} from "./MgmtRouter";
+import {ErrCode} from "./def";
 const cors = require('cors')
 
 class MainProc {
@@ -36,9 +38,15 @@ class MainProc {
             }
             next()
         })
-
+        new MgmtRouter(app, gAppCfg.basePath + MGMT_PATH)
         new CApiRouter(app, gAppCfg.basePath + CAPI_PATH)
         new SApiRouter(app, gAppCfg.basePath + SAPI_PATH)
+
+        app.all('*', (req, resp) => {
+            resp.status(404).end()
+            return;
+        })
+
 
         const server = http.createServer(app)
         server.listen(gAppCfg.servicePort, '0.0.0.0')

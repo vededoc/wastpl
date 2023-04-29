@@ -30,6 +30,8 @@ export interface AppCfg {
     redisDb?: number
     redisUser?: string
     redisPassword?: string
+
+    logLevel: string //'info' | 'debug' | 'warn' | 'error' | 'trace'
 }
 
 export const gAppCfg = {} as AppCfg
@@ -62,7 +64,6 @@ export function fileExists(file: string): boolean {
 }
 
 export function InitApp() {
-    logger.info('init app...')
     const rootPath = require('app-root-path')
     const pkgfile = path.resolve(rootPath.path, 'package.json')
     const pkgJson = require(pkgfile)
@@ -98,13 +99,18 @@ export function InitApp() {
         gAppCfg.redisDb = Number.parseInt(redisDb)
     }
 
+    gAppCfg.logLevel = process.env.logLevel ?? 'info'
+
 
     program
         .option('-w, --work-dir <working-dir>', 'working directory')
         .option('--scheduler', 'run as worker for scheduling')
+        .option('--log-level [log level]')
         .version(pkgJson.version)
     program.parse()
 
     const opts = program.opts()
     gAppCfg.scheduler = opts.scheduler ?? false;
+
+
 }
