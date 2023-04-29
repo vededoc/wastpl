@@ -18,8 +18,6 @@ class GoogleAuth {
             console.log("Email: " + responsePayload.email);
         }
         google.accounts.id.initialize({
-            // client_id: '647588110158-ug20mj9l2vduft645orlk4vi5k2eqh3m',
-            // client_id: '647588110158-ug20mj9l2vduft645orlk4vi5k2eqh3m.apps.googleusercontent.com',
             client_id: clientId,
             callback: handleCredentialResponse
         });
