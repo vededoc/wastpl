@@ -1,12 +1,10 @@
 import {DBBase} from "./db/DBBase";
 import {MariaDBClient} from "./db/MariaDBClient";
-// import {PgClient} from "./db/PgClient";
 import * as express from 'express'
 import {program} from "commander";
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
-import logger from "./logger";
 
 export interface AppCfg {
     pkgName: string
@@ -30,6 +28,9 @@ export interface AppCfg {
     redisDb?: number
     redisUser?: string
     redisPassword?: string
+
+    // SNS auth
+    googleClientId?: string
 
     logLevel: string //'info' | 'debug' | 'warn' | 'error' | 'trace'
 }
@@ -101,6 +102,8 @@ export function InitApp() {
 
     gAppCfg.logLevel = process.env.logLevel ?? 'info'
 
+    gAppCfg.googleClientId = process.env.googleClientId
+
 
     program
         .option('-w, --work-dir <working-dir>', 'working directory')
@@ -111,6 +114,4 @@ export function InitApp() {
 
     const opts = program.opts()
     gAppCfg.scheduler = opts.scheduler ?? false;
-
-
 }

@@ -91,4 +91,21 @@ export class MariaDBClient extends DBBase {
     }
 
 
+    async addUser(uf: UserProfileRec) {
+        const cts = toSqlDate(new Date, true)
+        return this.pool.execute(
+            'insert into user_profile (serviceId, userId, password, userName, phoneNumber, address, status, signupDate, imgUrl) values (?,?,?,?,?,?,?,?,?)',
+            [uf.serviceId, uf.userId, uf.password, uf.userName, uf.phoneNumber, uf.address, 1, cts, uf.imgUrl]
+            )
+    }
+
+    private checkUndefined(obj: any) {
+        const res = {...obj}
+        for(const k in res) {
+            if(res[k] === undefined) {
+                res[k] = null
+            }
+        }
+        return res
+    }
 }

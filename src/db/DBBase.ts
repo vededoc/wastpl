@@ -11,4 +11,5 @@ export abstract class DBBase {
     abstract changeServiceStatus(serviceId: string, status: number): Promise<number>
     abstract retrieveServices(): Promise<ServiceProfileRec[]>
     abstract deleteApiLog(ct: Date): Promise<number>
+    abstract addUser(uf: UserProfileRec): Promise<any>
 }

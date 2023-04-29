@@ -1,11 +1,9 @@
-import {ServicePolicy} from "../def";
+import {ServicePolicy, UserProfile} from "../def";
 
-export interface UserProfileRec {
-    userId: string
+export interface UserProfileRec extends UserProfile {
+    serviceId: string
     password: string
-    phoneNumber: string
     signupDate: Date
-    address: string
     status: string
 }
 

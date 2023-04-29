@@ -12,6 +12,7 @@ import gServices from "./Services";
 import * as sqlstring from 'sqlstring'
 import {MgmtRouter} from "./MgmtRouter";
 import {ErrCode} from "./def";
+import {gGoogleAuthSvc} from "./GoogleAuthSvc";
 const cors = require('cors')
 
 class MainProc {
@@ -21,6 +22,9 @@ class MainProc {
         logger.info('worker init')
         wasRedis.init();
         gServices.init();
+        if(gAppCfg.googleClientId !== undefined) {
+            gGoogleAuthSvc.init(gAppCfg.googleClientId)
+        }
         const db = GetDb()
         this.db = db
 

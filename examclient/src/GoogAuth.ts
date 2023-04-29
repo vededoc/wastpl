@@ -1,4 +1,6 @@
+import {SignUpReq} from '../../src/apimsg'
 declare const google: any
+const axios = require('axios')
 class GoogleAuth {
     loaded: boolean = false
 
@@ -10,12 +12,19 @@ class GoogleAuth {
         const handleCredentialResponse = (response: any) => {
             console.info('on handle response,', response)
             const responsePayload = this.parseJwt(response.credential)
+            console.info('payload:', responsePayload)
             console.log("ID: " + responsePayload.sub);
             console.log('Full Name: ' + responsePayload.name);
             console.log('Given Name: ' + responsePayload.given_name);
             console.log('Family Name: ' + responsePayload.family_name);
             console.log("Image URL: " + responsePayload.picture);
             console.log("Email: " + responsePayload.email);
+            const rqm: SignUpReq = {
+                serviceId: 'testsvc',
+                authType: 'google',
+                credential: response.credential
+            }
+            axios.post('http://localhost:19000/was/v1/capi/signUp', rqm)
         }
         google.accounts.id.initialize({
             client_id: clientId,

@@ -5,6 +5,8 @@ import {GetUserReq, SignInReq, SignUpReq} from "./apimsg";
 import {ErrCode} from "./def";
 import {waitSec} from "@vededoc/sjsutils";
 import logger from "./logger";
+import {gGoogleAuthSvc} from "./GoogleAuthSvc";
+import {UserProfileRec} from "./db/dbrecord";
 
 export class CApiRouter {
     app: Express.Application
@@ -24,7 +26,29 @@ export class CApiRouter {
 
         router.post('/signUp', async (req, resp) => {
             const rqm = req.body as SignUpReq
+            if(!rqm.serviceId) {
+                ApiResp(resp, ErrCode.badRequest)
+                return;
+            }
 
+            try {
+                if(rqm.authType == 'google') {
+                    const vr = (await gGoogleAuthSvc.verify(rqm.credential))
+                    const uf: UserProfileRec = {
+                        ...vr,
+                        serviceId: rqm.serviceId,
+                        password: null, signupDate: null, status: "",
+                        phoneNumber: null
+                    }
+                    await db.addUser(uf)
+                }
+                else {
+                    ApiResp(resp, ErrCode.badRequest)
+                }
+            } catch (err) {
+                console.trace(err)
+                ApiResp(resp, ErrCode.dataError, undefined, err.message)
+            }
             ApiResp(resp, ErrCode.ok)
         })
         router.post('/signIn', async (req, resp) =>{

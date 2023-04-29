@@ -14,10 +14,11 @@ export interface GetUserReq {
 }
 
 export interface SignUpReq {
-    userId: string
-    userName: string
-    token: string
-    authType: string
+    serviceId: string
+    userId?: string
+    userName?: string
+    credential: string
+    authType: string // 'google' | 'email'
 }
 export interface SignUpResp {
 
