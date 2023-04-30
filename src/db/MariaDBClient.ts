@@ -3,6 +3,10 @@ import * as mariadb from 'mariadb'
 import {ServiceProfileRec, UserProfileRec} from "./dbrecord";
 import {toSqlDate} from "@vededoc/sjsutils";
 import logger from "../logger";
+import {ErrCode} from "../def";
+import {AppErr} from "../AppErr";
+
+
 export class MariaDBClient extends DBBase {
     pool: mariadb.Pool
 
@@ -31,9 +35,16 @@ export class MariaDBClient extends DBBase {
         // }, 1000)
     }
 
-    async getUser(userId: string): Promise<UserProfileRec> {
-        const res =  await this.pool.execute<UserProfileRec>('select * from user_profile where userId=(?)', [userId])
-        return res[0]
+    async getUser(keyType: string, userKey: string): Promise<UserProfileRec> {
+        if(keyType == 'userId') {
+            const res = await this.pool.execute<UserProfileRec>('select * from user_profile where userId=(?)', [userKey])
+            return res[0]
+        } else if(keyType == 'email') {
+            const res = await this.pool.execute<UserProfileRec>('select * from user_profile where email=(?)', [userKey])
+            return res[0]
+        } else {
+            throw new AppErr(ErrCode.invalid)
+        }
     }
 
     async apiLog(urlPath: string, msg: any): Promise<void> {
@@ -92,11 +103,32 @@ export class MariaDBClient extends DBBase {
 
 
     async addUser(uf: UserProfileRec) {
+        if(!uf.email) {
+            throw new AppErr(ErrCode.dataError, 'email invalid')
+        }
+
         const cts = toSqlDate(new Date, true)
-        return this.pool.execute(
-            'insert into user_profile (serviceId, userId, password, userName, phoneNumber, address, status, signupDate, imgUrl) values (?,?,?,?,?,?,?,?,?)',
-            [uf.serviceId, uf.userId, uf.password, uf.userName, uf.phoneNumber, uf.address, 1, cts, uf.imgUrl]
+        try {
+            // const fres = await this.pool.execute('select email from user_profile where email=?', [uf.email])
+            // if(fres[0].email) {
+            //     throw new AppErr(ErrCode.duplicated)
+            // }
+
+            const res = await this.pool.execute(
+                'insert into user_profile (serviceId, userId, password, userName, email, authType, phoneNumber, address, status, signupDate, imgUrl) values (?,?,?,?,?,?,?,?,?,?,?)',
+                [uf.serviceId, uf.userId ?? null, uf.password??null,
+                    uf.userName??null, uf.email, uf.authType,
+                    uf.phoneNumber??null, uf.address??null, 1, cts, uf.imgUrl??null]
             )
+            return res.affectedRows
+        } catch (err) {
+            console.trace(err)
+            if(err.code == 'ER_DUP_ENTRY') {
+                throw new AppErr(ErrCode.duplicated)
+            } else {
+                throw new AppErr(ErrCode.dataError)
+            }
+        }
     }
 
     private checkUndefined(obj: any) {

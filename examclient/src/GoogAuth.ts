@@ -1,6 +1,9 @@
-import {SignUpReq} from '../../src/apimsg'
+import {SignInReq, SignUpReq} from '../../src/apimsg'
 declare const google: any
-const axios = require('axios')
+// const axios = require('axios')
+import axios from 'axios'
+
+const apiBase = 'http://localhost:19000/was/v1/capi'
 class GoogleAuth {
     loaded: boolean = false
 
@@ -9,7 +12,7 @@ class GoogleAuth {
             return;
         }
         this.loaded = true
-        const handleCredentialResponse = (response: any) => {
+        const handleCredentialResponse = async (response: any) => {
             console.info('on handle response,', response)
             const responsePayload = this.parseJwt(response.credential)
             console.info('payload:', responsePayload)
@@ -19,12 +22,21 @@ class GoogleAuth {
             console.log('Family Name: ' + responsePayload.family_name);
             console.log("Image URL: " + responsePayload.picture);
             console.log("Email: " + responsePayload.email);
-            const rqm: SignUpReq = {
+            const rqm: SignInReq = {
                 serviceId: 'testsvc',
                 authType: 'google',
                 credential: response.credential
             }
-            axios.post('http://localhost:19000/was/v1/capi/signUp', rqm)
+            const axcl = axios.create({
+                baseURL: apiBase
+            })
+            axcl.post('/signIn', rqm).then( response => {
+                    console.info('response:', response.data)
+                const {token} = response.data.data
+                axcl.post('/getUser', {serviceId:'testsvc'}, {
+                    headers: {Authorization: `Bearer ${token}`}
+                })
+            })
         }
         google.accounts.id.initialize({
             client_id: clientId,

@@ -1,3 +1,4 @@
+import {JwtPayload} from "jsonwebtoken";
 import {UserProfileRec} from "./db/dbrecord";
 
 export const ErrCode = {
@@ -5,14 +6,14 @@ export const ErrCode = {
     notFound: 'NOT_FOUND',
     badRequest: 'BAD_REQUEST',
     authFail: 'AUTH_FAIL',
-    invalidMsg: 'INVALID_MSG',
+    duplicated: 'DUPLICATED',
+    invalid: 'INVALID',
     dataError: 'DATA_ERROR',
     error: 'ERROR',
 }
 
 export interface ServicePolicy {
-    maxBitrate: number
-    codec: 'h264' | 'av1' |'VP8'
+
 }
 
 export interface UserProfile {
@@ -27,4 +28,9 @@ export interface UserProfile {
 export interface TokenVerifyRes extends UserProfile {
     email: string
     exp: Date
+}
+
+export interface JwtRasPayload extends JwtPayload{
+    userId: string
+    userName: string
 }

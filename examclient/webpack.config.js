@@ -6,7 +6,6 @@ const fs = require('fs')
 
 module.exports = () => {
 	const env = dotenv.config().parsed
-	// 환경 변수를 DefinePlugin에 전달합니다.
 	const envKeys = Object.keys(env).reduce((prev, next) => {
 		prev[`process.env.${next}`] = JSON.stringify(env[next]);
 		return prev;

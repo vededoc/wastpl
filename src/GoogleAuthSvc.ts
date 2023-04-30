@@ -1,4 +1,3 @@
-// const {OAuth2Client} = require('google-auth-library')
 import {OAuth2Client} from "google-auth-library";
 import logger from "./logger";
 import {TokenVerifyRes, UserProfile} from "./def";
@@ -12,13 +11,16 @@ export class GoogleAuthSvc {
     }
 
     async verify(credential: string): Promise<TokenVerifyRes> {
-        logger.info('verify token:', credential)
+        logger.debug('verify token:', credential)
+        // const t1 = performance.now()
+        // take some times for verification, ( >= 100ms )
         const ticket = await this.client.verifyIdToken({
             idToken: credential,
             audience: this.clientId,  // Specify the CLIENT_ID of the app that accesses the backend
             // Or, if multiple clients access the backend:
             //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
         });
+        // logger.info('verify dur=', performance.now()-t1)
         const payload = ticket.getPayload();
         const uf = {} as TokenVerifyRes
         uf.userId = payload.email

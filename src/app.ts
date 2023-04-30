@@ -5,6 +5,7 @@ import {program} from "commander";
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
+import {BaseResp} from "./apimsg";
 
 export interface AppCfg {
     pkgName: string
@@ -50,7 +51,10 @@ export function GetDb() {
 }
 
 export function ApiResp(resp: express.Response, code: string, data?:any, msg?:string) {
-    resp.json({code, data, msg})
+    const rpm  = {code} as BaseResp
+    if(data) rpm.data = data
+    if(msg) rpm.msg = msg
+    resp.json(rpm)
 }
 
 let Db: DBBase;
@@ -109,6 +113,7 @@ export function InitApp() {
         .option('-w, --work-dir <working-dir>', 'working directory')
         .option('--scheduler', 'run as worker for scheduling')
         .option('--log-level [log level]')
+        .option('--gen-keys [bits]')
         .version(pkgJson.version)
     program.parse()
 

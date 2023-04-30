@@ -1,6 +1,6 @@
-import {program} from "commander";
-
 require('dotenv').config()
+
+import {program} from "commander";
 
 const cluster = require('node:cluster')
 
@@ -10,30 +10,15 @@ import {gAppCfg, InitApp} from "./app";
 import gMainProc from "./MainProc";
 import logger, {GetLogLevel, SetLogLevel} from "./logger";
 import gScheduler from "./Scheduler";
-import axios from "axios";
-import {MGMT_PATH} from "./apimsg";
+import {ProcCtrlCmd} from "./AppCmd";
 
 
-async function ProcCtrlCmd() {
-    const opts = program.opts()
-    const cmdUrl = `http://127.0.0.1:${gAppCfg.servicePort}${gAppCfg.basePath}${MGMT_PATH}`
-    if(opts.logLevel != undefined) {
-        if(opts.logLevel === true) {
-            const res = await axios.get(cmdUrl + '/logLevel')
-            console.info(res.data.data.level)
-        } else {
-            const res = await axios.post(cmdUrl + '/logLevel', {level: opts.logLevel})
-            console.info(res.data.code)
-        }
-    }
-    process.exit(0)
-}
 
 async function Main() {
     if(!gAppCfg.scheduler) {
         process.title = gAppCfg.pkgName
         const opts = program.opts()
-        if(opts.logLevel != undefined) {
+        if(opts.logLevel != undefined || opts.genKeys) {
             await ProcCtrlCmd()
             process.exit(0)
         }
@@ -45,6 +30,9 @@ async function Main() {
                 cluster.fork()
             }
         } else {
+            if(gAppCfg.clusterCount == 0) {
+                logger.info('config:', YAML.stringify(gAppCfg))
+            }
             gMainProc.init()
         }
     } else {

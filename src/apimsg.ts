@@ -10,7 +10,8 @@ export interface BaseResp {
 }
 
 export interface GetUserReq {
-    userId: string
+    serviceId: string
+    uid: number
 }
 
 export interface SignUpReq {
@@ -24,6 +25,9 @@ export interface SignUpResp {
 
 }
 export interface SignInReq {
-    userId: string
-    password: string
+    serviceId: string
+    userId?: string
+    password?: string
+    authType: string
+    credential: string
 }

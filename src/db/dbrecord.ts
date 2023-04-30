@@ -1,6 +1,8 @@
 import {ServicePolicy, UserProfile} from "../def";
 
 export interface UserProfileRec extends UserProfile {
+    uid: number
+    authType: string
     serviceId: string
     password: string
     signupDate: Date
@@ -15,4 +17,6 @@ export interface ServiceProfileRec {
     registeredDate: Date
     description: string
     policies: ServicePolicy
+    privKey: string
+    publicKey: string
 }
