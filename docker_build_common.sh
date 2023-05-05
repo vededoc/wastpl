@@ -21,4 +21,5 @@ docker build -t wastpl:0.1 \
   --build-arg DB_NAME="${DB_NAME}" \
   --build-arg DB_USER="${DB_USER}" \
   --build-arg DB_PASSWORD="${DB_PASSWORD}" \
+  --build-arg TZ="${TZ}" \
   --build-arg REDIS_HOST="${REDIS_HOST}" .

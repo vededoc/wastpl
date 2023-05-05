@@ -1,4 +1,5 @@
 FROM node:16-alpine
+
 ARG DB_BRAND=mariadb
 ARG DB_HOST=localhost
 ARG DB_NAME=was
@@ -13,10 +14,12 @@ ARG API_LOG=0
 ARG REDIS_HOST=localhost
 ARG GOOGLE_CLIENT_ID
 
+ARG TZ
+
 #ARG EXTERNAL_ADDR
 #ARG STORAGE_PATH=/data/was/files
 WORKDIR /app
-RUN npm i -g @vededoc/l4app
+RUN npm i -g @vededoc/l4app@1.1.3
 RUN npm i -g pnpm
 ADD dist /app/dist
 #RUN mkdir -p /data/was/files
@@ -36,4 +39,9 @@ ENV REDIS_HOST $REDIS_HOST
 ENV EXTERNAL_ADDR $EXTERNAL_ADDR
 ENV STORAGE_PATH $STORAGE_PATH
 ENV NPM_CONFIG_LOGLEVEL warn
+
+RUN apk add --no-cache tzdata
+ENV TZ=$TZ
+
+
 CMD ["l4app", "-w", "/data/was/logs", "node", "--", "./dist/main.js"]
