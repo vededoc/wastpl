@@ -8,49 +8,61 @@ import * as os from "os";
 import {BaseResp} from "./apimsg";
 
 export interface AppCfg {
-    pkgName: string
-    dbBrand: string
-    dbName: string
-    dbHost: string
-    dbPort?: number
-    dbUser: string
-    dbPassword: string
-    servicePort: number
-    clusterCount: number
-    basePath: string
-    apiLog: boolean
 
-    scheduler: boolean
-    dataDurations: number
+    DB_BRAND: string
+    DB_NAME: string
+    DB_HOST: string
+    DB_PORT?: number
+    DB_USER: string
+    DB_PASSWORD: string
+    SERVICE_PORT: number
+    CLUSTER_COUNT: number
+    BASE_PATH: string
+    API_LOG: boolean
+
+    SCHEDULER: boolean
+    DATA_DURATIONS: number
 
     // redis
-    redisHost: string
-    redisPort?: number
-    redisDb?: number
-    redisUser?: string
-    redisPassword?: string
+    REDIS_HOST: string
+    REDIS_PORT?: number
+    REDIS_DB?: number
+    REDIS_USER?: string
+    REDIS_PASSWORD?: string
 
     // SNS auth
-    googleClientId?: string
+    GOOGLE_CLIENT_ID?: string
 
+    pkgName: string
     logLevel: string //'info' | 'debug' | 'warn' | 'error' | 'trace'
 }
 
-export const gAppCfg = {} as AppCfg
+export const gAppCfg = {
+    BASE_PATH: '/was/v1'
+} as AppCfg
 
 export function GetDb() {
    if(!Db) {
-       if(gAppCfg.dbBrand == 'mariadb') {
+       if(gAppCfg.DB_BRAND == 'mariadb') {
            Db = new MariaDBClient()
-       } else if(gAppCfg.dbBrand == 'pg') {
+       } else if(gAppCfg.DB_BRAND == 'pg') {
            // Db = new PgClient()
        }
-       Db.init(gAppCfg.dbUser, gAppCfg.dbPassword, gAppCfg.dbName, gAppCfg.dbHost, gAppCfg.dbPort)
+       Db.init(gAppCfg.DB_USER, gAppCfg.DB_PASSWORD, gAppCfg.DB_NAME, gAppCfg.DB_HOST, gAppCfg.DB_PORT)
    }
    return Db;
 }
 
-export function ApiResp(resp: express.Response, code: string, data?:any, msg?:string) {
+/**
+ * send json response
+ *
+ * @param resp - response object of express request handler
+ * @param code - response code
+ * @param data - response data
+ * @param msg - optional message
+ * @return - none
+ */
+export function ApiResp(resp: express.Response, code: string, data?:any, msg?:string): void {
     const rpm  = {code} as BaseResp
     if(data) rpm.data = data
     if(msg) rpm.msg = msg
@@ -72,42 +84,48 @@ export function InitApp() {
     const rootPath = require('app-root-path')
     const pkgfile = path.resolve(rootPath.path, 'package.json')
     const pkgJson = require(pkgfile)
+    Object.assign(gAppCfg, process.env)
 
     gAppCfg.pkgName = pkgJson.name
-    gAppCfg.dbBrand = process.env.dbBrand ?? 'mariadb'
-    gAppCfg.dbUser = process.env.dbUser ?? 'wastpl'
-    gAppCfg.dbPassword = process.env.dbPassword ?? 'wastpl'
-    gAppCfg.dbHost = process.env.dbHost ?? 'localhost'
-    gAppCfg.dbPort = process.env.dbPort != undefined ? Number.parseInt(process.env.dbPort) : undefined
-    gAppCfg.dbName = process.env.dbName ?? 'wastpl'
-    if(process.env.servicePort != undefined) {
-        gAppCfg.servicePort = Number.parseInt(process.env.servicePort)
+    gAppCfg.DB_BRAND = gAppCfg.DB_BRAND ?? 'mariadb'
+    gAppCfg.DB_USER = gAppCfg.DB_USER ?? 'wastpl'
+    // gAppCfg.dbPassword = process.env.dbPassword ?? 'wastpl'
+    gAppCfg.DB_HOST = gAppCfg.DB_HOST ?? 'localhost'
+    if(gAppCfg.DB_PORT != undefined) {
+        gAppCfg.DB_PORT = Number.parseInt(gAppCfg.DB_PORT as any)
     }
-    if(process.env.clusterCount != undefined) {
-        gAppCfg.clusterCount = Number.parseInt(process.env.clusterCount)
+
+    gAppCfg.DB_NAME = gAppCfg.DB_NAME ?? 'wastpl'
+
+    if(gAppCfg.SERVICE_PORT != undefined) {
+        gAppCfg.SERVICE_PORT = Number.parseInt(gAppCfg.SERVICE_PORT as any)
+    }
+
+    if(gAppCfg.CLUSTER_COUNT != undefined) {
+        gAppCfg.CLUSTER_COUNT = Number.parseInt(gAppCfg.CLUSTER_COUNT as any)
     } else {
-        gAppCfg.clusterCount = os.cpus().length
+        gAppCfg.CLUSTER_COUNT = os.cpus().length
     }
-    gAppCfg.servicePort = Number.parseInt( process.env.servicePort ?? '19000')
-    gAppCfg.basePath = process.env.basePath ?? '/was/v1'
-    gAppCfg.apiLog = (process.env.apiLog ?? '0') == '1' ? true:false
+
+    gAppCfg.BASE_PATH = gAppCfg.BASE_PATH ?? '/was/v1'
+
+    if(gAppCfg.API_LOG === undefined) {
+        gAppCfg.API_LOG = false;
+    } else {
+        gAppCfg.API_LOG = (gAppCfg.API_LOG as any) === "1"
+    }
+
 
     // redis
-    const {redisHost, redisPort, redisUser, redisPassword, redisDb} = process.env
-    gAppCfg.redisHost = redisHost ?? 'localhost'
-    if(redisPort != undefined) {
-        gAppCfg.redisPort = Number.parseInt(redisPort)
+    gAppCfg.REDIS_HOST = gAppCfg.REDIS_HOST ?? 'localhost'
+    if(gAppCfg.REDIS_PORT != undefined) {
+        gAppCfg.REDIS_PORT = Number.parseInt(gAppCfg.REDIS_PORT as any)
     }
-    gAppCfg.redisUser = redisUser
-    gAppCfg.redisPassword = redisPassword
-    if(redisDb != undefined) {
-        gAppCfg.redisDb = Number.parseInt(redisDb)
+    if(gAppCfg.REDIS_DB != undefined) {
+        gAppCfg.REDIS_DB = Number.parseInt(gAppCfg.REDIS_DB as any)
     }
 
-    gAppCfg.logLevel = process.env.logLevel ?? 'info'
-
-    gAppCfg.googleClientId = process.env.googleClientId
-
+    gAppCfg.logLevel = gAppCfg.logLevel ?? 'info'
 
     program
         .option('-w, --work-dir <working-dir>', 'working directory')
@@ -118,5 +136,5 @@ export function InitApp() {
     program.parse()
 
     const opts = program.opts()
-    gAppCfg.scheduler = opts.scheduler ?? false;
+    gAppCfg.SCHEDULER = opts.scheduler ?? false;
 }

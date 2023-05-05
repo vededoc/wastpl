@@ -1,3 +1,5 @@
+import {UserProfile} from "./def";
+
 require('dotenv').config()
 
 import {program} from "commander";
@@ -12,10 +14,8 @@ import logger, {GetLogLevel, SetLogLevel} from "./logger";
 import gScheduler from "./Scheduler";
 import {ProcCtrlCmd} from "./AppCmd";
 
-
-
 async function Main() {
-    if(!gAppCfg.scheduler) {
+    if(!gAppCfg.SCHEDULER) {
         process.title = gAppCfg.pkgName
         const opts = program.opts()
         if(opts.logLevel != undefined || opts.genKeys) {
@@ -23,14 +23,14 @@ async function Main() {
             process.exit(0)
         }
 
-        if (gAppCfg.clusterCount > 0 && cluster.isPrimary) {
+        if (gAppCfg.CLUSTER_COUNT > 0 && cluster.isPrimary) {
             logger.info('main start')
             logger.info('config:', YAML.stringify(gAppCfg))
-            for (let i = 0; i < gAppCfg.clusterCount; i++) {
+            for (let i = 0; i < gAppCfg.CLUSTER_COUNT; i++) {
                 cluster.fork()
             }
         } else {
-            if(gAppCfg.clusterCount == 0) {
+            if(gAppCfg.CLUSTER_COUNT == 0) {
                 logger.info('config:', YAML.stringify(gAppCfg))
             }
             gMainProc.init()

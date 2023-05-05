@@ -5,7 +5,7 @@ import axios from "axios";
 
 export async function ProcCtrlCmd() {
     const opts = program.opts()
-    const cmdUrl = `http://127.0.0.1:${gAppCfg.servicePort}${gAppCfg.basePath}${MGMT_PATH}`
+    const cmdUrl = `http://127.0.0.1:${gAppCfg.SERVICE_PORT}${gAppCfg.BASE_PATH}${MGMT_PATH}`
     if(opts.logLevel != undefined) {
         if(opts.logLevel === true) {
             const res = await axios.get(cmdUrl + '/logLevel')
@@ -18,11 +18,11 @@ export async function ProcCtrlCmd() {
         try {
             let bits: number;
             if(opts.genKeys === true) {
-                bits = 512
+                bits = 2047
             } else {
                 bits = Number.parseInt( opts.genKeys )
             }
-            if( ![512, 1024, 2048].includes(bits)) {
+            if( ![2048].includes(bits)) {
                 console.error('invalid bits')
                 process.exit(1)
             }

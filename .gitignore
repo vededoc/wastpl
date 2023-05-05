@@ -4,3 +4,4 @@ node_modules
 /outBin
 .env
 yarn-error.log
+docker_build_tb.sh

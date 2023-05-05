@@ -2,7 +2,7 @@ import {Express} from "express";
 import * as express from 'express'
 import {ApiResp, GetDb} from "./app";
 import {GetUserReq, SignInReq, SignUpReq} from "./apimsg";
-import {ErrCode} from "./def";
+import {ErrCode, UserProfile} from "./def";
 import {waitSec} from "@vededoc/sjsutils";
 import logger from "./logger";
 import {gGoogleAuthSvc} from "./GoogleAuthSvc";
@@ -107,6 +107,7 @@ export class CApiRouter {
     }
 
     private getUserProc = async (req: express.Request, resp: express.Response) => {
+        const uf = {} as UserProfile
         const token = GetJwtToken(req.headers)
         const rqm = req.body as GetUserReq
         if(!token) {

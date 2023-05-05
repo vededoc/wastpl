@@ -21,21 +21,6 @@ class WasRedis {
     checkTimer: NodeJS.Timer
 
     constructor() {
-        this.redis = new Redis({
-            host: gAppCfg.redisHost,
-            username: gAppCfg.redisUser,
-            password: gAppCfg.redisPassword,
-            db: gAppCfg.redisDb
-        })
-        this.pubRedis = new Redis({
-            host: gAppCfg.redisHost,
-            username: gAppCfg.redisUser,
-            password: gAppCfg.redisPassword,
-            db: gAppCfg.redisDb
-        })
-        this.apiUpdateEvt = new EventEmitter()
-        this.chUpdateEvt = new EventEmitter()
-        this.cnnEvt = new EventEmitter();
 
     }
 
@@ -64,6 +49,22 @@ class WasRedis {
     }
 
     public init() {
+        this.redis = new Redis({
+            host: gAppCfg.REDIS_HOST,
+            username: gAppCfg.REDIS_USER,
+            password: gAppCfg.REDIS_PASSWORD,
+            db: gAppCfg.REDIS_DB
+        })
+        this.pubRedis = new Redis({
+            host: gAppCfg.REDIS_HOST,
+            username: gAppCfg.REDIS_USER,
+            password: gAppCfg.REDIS_PASSWORD,
+            db: gAppCfg.REDIS_DB
+        })
+        this.apiUpdateEvt = new EventEmitter()
+        this.chUpdateEvt = new EventEmitter()
+        this.cnnEvt = new EventEmitter();
+
         this.redis.on('error', err => {
             console.log('error cb:', err)
             if(!err) {

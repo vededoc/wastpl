@@ -16,6 +16,11 @@ export interface ServicePolicy {
 
 }
 
+/**
+ * user profile type info
+ *
+ * @property userId - user id value
+ */
 export interface UserProfile {
     userId: string
     userName: string
