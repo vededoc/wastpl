@@ -44,4 +44,5 @@ RUN apk add --no-cache tzdata
 ENV TZ=$TZ
 
 
-CMD ["l4app", "-w", "/data/was/logs", "node", "--", "./dist/main.js"]
+#CMD ["l4app", "-w", "/data/was/logs", "node", "--", "./dist/main.js"]
+CMD ["node", "./dist/main.js"]

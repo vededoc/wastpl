@@ -1,3 +1,0 @@
-#!/usr/bin/env node
-// require('dotenv').config({path: '.env'})
-require('./dist/main.js')
